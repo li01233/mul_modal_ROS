@@ -1,0 +1,8 @@
+<launch>
+    <include file="$(find rslidar_sdk)/launch/start.launch"/>
+    <include file="$(find hikvision_ros)/launch/hik.launch"/>
+    <node pkg="mess_sync" type="mess_sync" name="mess_sync"/>
+
+    <!-- rviz -->
+    <node pkg="rviz" name="rviz" type="rviz" args="-d $(find start_collect)/rviz/rviz.rviz" />
+</launch>
