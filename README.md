@@ -33,7 +33,7 @@ rosbag record /pointcloud /compressedimg1  /compressedimg2  /compressedimg3  /co
 # 回放
 roscore\
 source devel/setup.bash\
-roslaunch start_collect play.launch bag_path:="/home/li012/robosense_ws/data/3.bag" # 必须为绝对路径
+roslaunch start_collect play.launch bag_path:="/home/li012/robosense_ws/data/1208lidar/3.bag" # 必须为绝对路径
 
 # 解码为jpg和pcd
 

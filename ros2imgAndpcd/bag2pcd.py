@@ -71,11 +71,11 @@ class ExtractBagData(object):
  
 if __name__ == '__main__':
     #需要处理的bag包的路径
-    bagfile_path = os.path.join("3.bag")
+    bagfile_path = os.path.join("./data/3.bag")
     camera_topic = ["/compressedimg1","/compressedimg2","/compressedimg3","/compressedimg4"]
     pointcloud_topic = "/pointcloud"
     #将bag转换为pcd和jpg格式的保存路径
-    extract_bag = ExtractBagData(bagfile_path, camera_topic, pointcloud_topic,  "./")
+    extract_bag = ExtractBagData(bagfile_path, camera_topic, pointcloud_topic,  "./data")
     extract_bag.extract_camera_topic()
     extract_bag.extract_pointcloud_topic()
     

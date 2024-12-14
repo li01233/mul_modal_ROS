@@ -41,6 +41,8 @@ void callback(const sensor_msgs::PointCloud2::ConstPtr& ori_pointcloud, const se
   Img_info_pub3.publish(syn_img3);
   Img_info_pub4.publish(syn_img4);
 
+
+  // 去除NAN
   pcl::PointCloud<pcl::PointXYZI>* cloud = new pcl::PointCloud<pcl::PointXYZI>;
   pcl::fromROSMsg(*ori_pointcloud, *cloud);
 
@@ -57,8 +59,6 @@ void callback(const sensor_msgs::PointCloud2::ConstPtr& ori_pointcloud, const se
 int main(int argc, char** argv)
 {
   // 初始化节点
-  ros::init(argc,argv,"img");
-  ros::init(argc,argv,"pointcloud");
   ros::init(argc, argv, "msg_synchronizer");
   ros::NodeHandle nh;
   // 初始化发布话题

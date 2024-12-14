@@ -83,7 +83,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /img3
+      Image Topic: /img1
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -121,7 +121,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 103.5901870727539
+      Distance: 183.78192138671875
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -137,9 +137,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.450398325920105
+      Pitch: 0.2603984773159027
       Target Frame: <Fixed Frame>
-      Yaw: 2.8554155826568604
+      Yaw: 3.165414571762085
     Saved: ~
 Window Geometry:
   Displays:
