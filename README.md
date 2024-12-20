@@ -1,7 +1,3 @@
-# 说明
-本程序用于海康威视监控相机+RoboSense128线激光雷达同步数据采集，本程序已经做好封装，时间同步和去NaN值\
-更多请看<url>https://blog.csdn.net/u011549111/article/details/144158995</url>
-
 # 2024.12.20 更新 Quantum2雷达和一个未实现的内容
 
 ## Quantum2雷达
@@ -10,7 +6,7 @@
 
 输出在话题/quantum_spoke中，是一个250*256的矩阵（250为辐条个数，256为每个辐条的长度），采集时依旧使用
 
-roslaunch start_collect start.launch
+roslaunch start_collect start.launch\
 rosbag record /pointcloud /compressedimg1  /compressedimg2  /compressedimg3  /compressedimg4 /quantum_spoke
 
 关于一些uantum2雷达集成ROS的细节（和吐槽）我都写进了新博客，欢迎大家参考
@@ -18,6 +14,10 @@ rosbag record /pointcloud /compressedimg1  /compressedimg2  /compressedimg3  /co
 ## 一个未实现的内容
 
 这部分主要是想实现如何将雷达数据和相机数据联合标注转换后，点云映射到图像上的效果，目前参考了<url>https://github.com/jhzhang19/ros_project_pc_to_image</url>的包，但还没有实现出来，等实现了我会提交2.2版本的
+
+# 说明
+本程序用于海康威视监控相机+RoboSense128线激光雷达同步数据采集，本程序已经做好封装，时间同步和去NaN值\
+更多请看<url>https://blog.csdn.net/u011549111/article/details/144158995</url>
 
 # 编译
 ## 检查相机配置
