@@ -16,6 +16,10 @@
 ## 在本文件所在路径下make
 catkin_make
 
+使用conda的话先激活环境安装empy，再catkin_make
+pip install empy==3.3.4
+catkin_make -DPYTHON_EXECUTABLE=/home/li012/miniconda3/envs/ros/bin/python3 # 这里改成你的环境路径
+
 # 运行与录制
 ## 运行ros
 roscore

@@ -1,0 +1,5 @@
+<launch>
+    <env name="PYTHONPATH" value="$(find radar)/scripts:$(env PYTHONPATH)"/>
+    <!-- 其他节点启动 -->
+    <node pkg="radar" name="quantum" type="quantum.py"/>
+</launch>
