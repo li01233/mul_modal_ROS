@@ -9,7 +9,7 @@
 roslaunch start_collect start.launch\
 rosbag record /pointcloud /compressedimg1  /compressedimg2  /compressedimg3  /compressedimg4 /quantum_spoke
 
-关于一些uantum2雷达集成ROS的细节（和吐槽）我都写进了新博客<url>https://blog.csdn.net/u011549111/article/details/144703463?spm=1001.2014.3001.5502</url>，欢迎大家参考
+关于一些Quantum2雷达集成ROS的细节（和吐槽）我都写进了新博客<url>https://blog.csdn.net/u011549111/article/details/144703463?spm=1001.2014.3001.5502</url>，欢迎大家参考
 
 ## 一个未实现的内容
 
