@@ -1,6 +1,3 @@
-  #! /usr/bin/python
-# coding=utf-8
- 
 import os
 import rosbag
 import cv2
@@ -71,7 +68,7 @@ class ExtractBagData(object):
  
 if __name__ == '__main__':
     #需要处理的bag包的路径
-    bagfile_path = os.path.join("./data/3.bag")
+    bagfile_path = "2024-12-20-15-08-01.bag"
     camera_topic = ["/compressedimg1","/compressedimg2","/compressedimg3","/compressedimg4"]
     pointcloud_topic = "/pointcloud"
     #将bag转换为pcd和jpg格式的保存路径
