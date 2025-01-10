@@ -1,0 +1,9 @@
+<launch>
+<arg name="ip_addr" default="230.168.50.16"/>
+<arg name="port" default="20000"/>
+
+<node pkg="imu" type="imu" name="imu" output="screen">
+    <param name="ip_addr" value="$(arg ip_addr)" />
+    <param name="port" value="$(arg port)" />
+</node>
+</launch>
