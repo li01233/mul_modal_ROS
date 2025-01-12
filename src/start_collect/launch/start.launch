@@ -1,7 +1,9 @@
 <launch>
     <include file="$(find rslidar_sdk)/launch/start.launch"/>
     <include file="$(find hikvision_ros)/launch/hik.launch"/>
+    <include file="$(find hikvision_ros)/launch/hik_tem.launch"/>
     <include file="$(find radar)/launch/quantum.launch"/>
+    <include file="$(find hik_tem)/launch/hik_ptz.launch"/>
     <node pkg="mess_sync" type="mess_sync" name="mess_sync"/>
 
     <!-- rviz -->

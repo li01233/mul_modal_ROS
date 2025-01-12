@@ -208,7 +208,6 @@ void Imu::parseEnvData(rapidjson::Document& doc)
     envdata.WindSpdA = content["WindSpdA"].GetFloat();
     envdata.WindSpdR = content["WindSpdR"].GetFloat();
 
-
     pub_env.publish(envdata);
 
 }
