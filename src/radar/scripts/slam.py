@@ -5,7 +5,7 @@ from cv_bridge import CvBridge
 import rospy
 
 from std_msgs.msg import String
-from radar_interface.msg import Spoke
+from message_interface.msg import Spoke
 from sensor_msgs.msg import Image
 
 MAX_SPOKE_LENGTH = 256

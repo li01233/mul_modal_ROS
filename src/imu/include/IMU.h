@@ -17,8 +17,8 @@
 
 
 #include "std_msgs/String.h"
-#include "imu/EnvData.h"
-#include "imu/Ownship.h"
+#include "message_interface/EnvData.h"
+#include "message_interface/Ownship.h"
 #include "rapidjson/document.h"
 
 

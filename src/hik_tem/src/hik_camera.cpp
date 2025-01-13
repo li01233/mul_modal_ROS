@@ -11,7 +11,7 @@ void HikCamera::P2PDataCollet(const ros::TimerEvent& e)
     {
         if (struJpegWithAppendAata.dwP2PDataLen > 0 && struJpegWithAppendAata.pP2PDataBuff != NULL)
         {
-            hik_tem::P2PData p2pData;
+            message_interface::P2PData p2pData;
             p2pData.header.stamp = ros::Time::now();
             p2pData.header.frame_id = "hik_tem_cam";
             p2pData.data.resize(struJpegWithAppendAata.dwP2PDataLen);
@@ -117,7 +117,7 @@ bool HikCamera::initThemCam()
     return true;
 }
 
-void HikCamera::PtzCtrlCallback(const hik_tem::PtzCtrl::ConstPtr& msg)
+void HikCamera::PtzCtrlCallback(const message_interface::PtzCtrl::ConstPtr& msg)
 {
     NET_DVR_PTZPOS ptz_pos;
     unsigned int errCode;
@@ -223,10 +223,10 @@ void HikCamera::initROSIO(ros::NodeHandle& priv_node)
     ROS_INFO("[%s] image height: \t%d", camera_name.c_str(), image_height);
 
     // 云台控制
-    ptz_ctrl = priv_node.subscribe<hik_tem::PtzCtrl>("/ptz_ctrl", 10, boost::bind(&HikCamera::PtzCtrlCallback, this, _1));
+    ptz_ctrl = priv_node.subscribe<message_interface::PtzCtrl>("/ptz_ctrl", 10, boost::bind(&HikCamera::PtzCtrlCallback, this, _1));
     // 全图温度采集
     timer = priv_node.createTimer(ros::Duration(0.1), boost::bind(&HikCamera::P2PDataCollet, this, _1));
-    p2p_data_pub = priv_node.advertise<hik_tem::P2PData>("/p2p_data", 10);
+    p2p_data_pub = priv_node.advertise<message_interface::P2PData>("/p2p_data", 10);
 }
 
 void HikCamera::run()

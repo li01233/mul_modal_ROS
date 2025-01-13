@@ -5,7 +5,6 @@
     <include file="$(find radar)/launch/quantum.launch"/>
     <include file="$(find hik_tem)/launch/hik_ptz.launch"/>
     <node pkg="mess_sync" type="mess_sync" name="mess_sync"/>
-
     <!-- rviz -->
     <node pkg="rviz" name="rviz" type="rviz" args="-d $(find start_collect)/rviz/rviz.rviz" />
 </launch>

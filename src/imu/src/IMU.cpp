@@ -24,8 +24,8 @@ bool Imu::initROSIO(ros::NodeHandle& priv_node)
     if(initIMU(ip_addr_n, port_n))
     {
         ROS_INFO("initIMU success");
-        pub_ship = priv_node.advertise<imu::Ownship>("/ownship",10);
-        pub_env = priv_node.advertise<imu::EnvData>("/envdata",10);
+        pub_ship = priv_node.advertise<message_interface::Ownship>("/ownship",10);
+        pub_env = priv_node.advertise<message_interface::EnvData>("/envdata",10);
         timer = priv_node.createTimer(ros::Duration(0.01), &Imu::readUdpPendingDatagrams, this, false, true);
         return true;
     }
@@ -146,7 +146,7 @@ void Imu::parse(char *buffer)
 
 void Imu::parseOwnShip(rapidjson::Document& doc)
 {
-    imu::Ownship ownship;
+    message_interface::Ownship ownship;
     // Parse data to JSON
     ownship.DataType = doc["DataType"].GetString();
     ownship.DateTime = doc["DateTime"].GetString();
@@ -183,7 +183,7 @@ void Imu::parseOwnShip(rapidjson::Document& doc)
 
 void Imu::parseEnvData(rapidjson::Document& doc)
 {
-    imu::EnvData envdata;
+    message_interface::EnvData envdata;
 
     envdata.DataType = doc["DataType"].GetString();
     envdata.DateTime = doc["DateTime"].GetString();

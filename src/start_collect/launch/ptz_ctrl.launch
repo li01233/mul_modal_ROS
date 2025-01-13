@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="hik_tem" type="ptz_ctrl.py" name="ptz_ctrl"/>
+</launch>

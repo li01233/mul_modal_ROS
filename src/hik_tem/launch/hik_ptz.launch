@@ -15,6 +15,7 @@
 <arg name="camera_name" default="hik_camera"/>
 <arg name="camera_info_url" default=""/>
 
+
 <node pkg="hik_tem" type="hik_camera_app" name="hik_camera_app" output="screen">
 
     <!-- modify LD_LIBRARY_PATH for loading hikvision sdk -->

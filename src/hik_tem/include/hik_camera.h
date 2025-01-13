@@ -15,8 +15,8 @@
 
 #include "hik_sdk/HCNetSDK.h"
 #include "hik_sdk/plaympeg4.h"
-#include "hik_tem/PtzCtrl.h"
-#include "hik_tem/P2PData.h"
+#include "message_interface/PtzCtrl.h"
+#include "message_interface/P2PData.h"
 
 using namespace std;
 
@@ -50,7 +50,7 @@ class HikCamera{
         
         NET_DVR_JPEGPICTURE_WITH_APPENDDATA struJpegWithAppendAata = { 0 };
 
-        void PtzCtrlCallback(const hik_tem::PtzCtrl::ConstPtr& msg);
+        void PtzCtrlCallback(const message_interface::PtzCtrl::ConstPtr& msg);
         void P2PDataCollet(const ros::TimerEvent& e);
 
         bool initHikSDK();

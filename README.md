@@ -3,7 +3,15 @@
 ## 双光谱相机
 相机图像展示部分我依旧写在了hikvison_ros中,运行hik_tem.launch即可(用start_collect start.launch也可以),图片的在话题hik_cam_node_visible和hik_cam_node_thermal下
 
-云台操作我都封装好了,具体控制逻辑在hik_tem/scripts的ptz_contrl.py中,我把360度自动巡航写了,后续会更新和Quantum2导航雷达目标检测联动的功能
+云台操作我都封装好了,具体控制逻辑在hik_tem/scripts的ptz_contrl.py中,我把360度自动巡航和键盘控制写了,后续会更新和Quantum2导航雷达目标检测联动的功能
+
+启动方式依然使用
+
+roslaunch start_collect start.launch
+
+云台控制使用,w,a,s,d控制上下左右，空格进入巡航，再按一次退出，长按空格进入和雷达联动自动模式
+
+roslaunch start_collect ptz_ctrl.launch 
 
 ## IMU
 IMU使用的并不是普遍的串口那种,所以这里其实我只针对我们船的网口写了一个通讯协议而已,可以将网口传的数据解析并发布到自定义消息格式的话题/ownship和/envdata,存了GPS,IMU,气象仪,罗经等返回的数据.如果想研究组播通讯的可以看一看代码(但意义不大)

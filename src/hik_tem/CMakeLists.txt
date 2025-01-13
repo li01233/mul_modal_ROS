@@ -8,8 +8,9 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   image_transport
   camera_info_manager
-  message_generation
   std_msgs
+  rospy
+  message_interface
 )
 
 find_package(OpenCV 4 REQUIRED)
@@ -18,21 +19,10 @@ include_directories(${OpenCV_INCLUDES})
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDES})
 
-add_message_files(
-  FILES
-  PtzCtrl.msg
-  P2PData.msg
-)
-
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
-
 
 catkin_package(
   INCLUDE_DIRS include 
-  CATKIN_DEPENDS roscpp std_msgs message_runtime)
+  CATKIN_DEPENDS roscpp std_msgs rospy message_interface)
 
 
 include_directories(
@@ -49,10 +39,15 @@ target_link_libraries(hik_tem
     hcnetsdk PlayCtrl
 )
 
+add_dependencies(hik_tem 
+                ${${message_interface}_EXPORTED_TARGETS}
+                ${catkin_EXPORTED_TARGETS} )
+
+
 add_executable(hik_camera_app src/hik_camera_app.cpp)
 target_link_libraries(hik_camera_app hik_tem)
 
 catkin_install_python(PROGRAMS
-  scripts/ptz_contrl.py
+  scripts/ptz_ctrl.py
  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
