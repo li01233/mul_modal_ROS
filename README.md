@@ -1,10 +1,161 @@
-# 2025.01.16 更新 OPENCPN->雷达目标检测->控制云台相机 和 GPS报文发送
+# 说明
+本程序用于海康威视全景相机+RoboSense128线激光雷达+Quantum2导航雷达+海康威视双光谱云台相机+GPS，AIS，罗经，IMU等多传感器同步数据采集
 
-## GPS报文
-OPENCPN需要GPS的NMEA格式的报文以得到HDT等航海数据来产生ARPA目标，因此我需要将网口的数据转为NMEA格式的，让OPENCPN捕捉到。这部分在opencpn2ros中实现。
+#### 本程序实现了以下功能：
+
+采集功能部分（已封装到一个launch文件中）：
+1. 海康威视全景相机 四个镜头分别输出数据
+2. RoboSense128线激光雷达输出数据
+3. Quantum2导航雷达输出数据
+4. 海康威视双光谱云台相机 两个镜头分别输出数据 云台三种运动形式(360度自动巡航，键盘控制，雷达目标检测控制)
+5. IMU，GPS，AIS，罗经数据采集 其中IMU和AIS使用的是自定义的消息格式 GPS和罗经是NMEA_msg格式
+6. 图像与点云的时间同步
+7. 点云去NaN值
+
+重播功能部分：
+1. 可以重播压缩后的图片并显示在rviz中
+2. 联合标定效果显示(效果不佳)
+
+其他功能：
+1. bag解码为jpg和pcd
+
+#### 自定义IP与端口：(使用Wireshark可抓取)
+我的电脑固定IP 192.168.2.111
+
+全景相机 192.168.2.112:8000
+
+热成像相机 192.168.2.113:8000
+
+激光雷达 192.168.2.114:6699 7788
+
+OPENCPN转发罗经，AIS，GPS，ARPA 192.168.2.115:20001 20002 20003 20004
+
+组播：
+Quantum2 224.0.0.1:5800
+IMU 230.168.50.16:20000
+
+#### 话题说明：
+
+/hik_cam_node_1 全景相机镜头1 原始图像\
+/hik_cam_node_2 全景相机镜头2 原始图像\
+/hik_cam_node_3 全景相机镜头3 原始图像\
+/hik_cam_node_4 全景相机镜头4 原始图像\
+/compressedimg1 全景相机镜头1 压缩图像 已同步（用以采集）\
+/compressedimg2 全景相机镜头2 压缩图像 已同步（用以采集）\
+/compressedimg3 全景相机镜头3 压缩图像 已同步（用以采集）\
+/compressedimg4 全景相机镜头4 压缩图像 已同步（用以采集）
+
+/rslidar_points 激光雷达 原始数据\
+/pointcloud 激光雷达 去NaN点云 已同步（用以采集）
+
+/hik_cam_node_visible 双光谱相机 可见光原始图像 \
+/hik_cam_node_thermal 双光谱相机 红外原始图像 \
+/p2p_data 双光谱相机 全图测温原数据 \
+/ptz_ctrl 双光谱相机 云台控制话题 不需要采集
+
+/quantum_spoke 自定义雷达原始辐条数据 角度和一个250*256矩阵\
+/radar_image 雷达回波图像 
+
+/ownship 本船的信息 自定义IMU消息格式 \
+/envdata 环境数据 自定义IMU消息格式 \
+/nmea_sentense GPS和罗经 nmea_msgs \
+/ais AIS数据 自定义AIS消息格式 
+
+更多请看：
+1. 海康威视全景相机+RoboSense128线激光雷达 <url>https://blog.csdn.net/u011549111/article/details/144158995</url>
+2. Quantum2导航雷达+海康威视双光谱云台相机+GPS，AIS，罗经，IMU（未更新完毕） \
+<url>https://blog.csdn.net/u011549111/article/details/144703463?spm=1001.2014.3001.5502</url>
+
+# 使用教程
+## 编译
+### 检查相机配置
+在src/hikvision/launch/hik.launch和src/hikvision/launch/hik_tem.launch中更改ip等如下\
+(填自己的就行)\
+\<arg name="ip_addr" default="192.168.xxx.xxx"/>\
+\<arg name="user_name" default="admin"/>\
+\<arg name="password" default="***********"/>
+
+### 检查雷达配置
+在src/rslidar_sdk/config/config.yaml中更改雷达型号
+
+### 检查GPS等配置
+下载并安装opencpn，配置好输入输出端口。菜单栏tool/选项，然后添加网络。这里我选择192.168.2.115为输出ip，192.168.2.111是我本机的ip，作为输入ip
+
+![alt text](img/image.png)
+
+在src/nmea_navsat_driver/launch/nmea_socket_driver.launch和src/opencpn2ros/launch/nmea_parser.launch同样更改ip和端口为opencpn输出的端口与ip
+
+然后再在opencpn中安装radar插件。选择更新插件目录，然后选择radar插件打钩
+
+![alt text](img/image-1.png)
+
+
+### 在本文件所在路径下make
+```
+catkin_make
+
+使用conda的话先激活环境安装empy，再catkin_make
+pip install empy==3.3.4
+#这里改成你的环境路径
+catkin_make -DPYTHON_EXECUTABLE=/home/li012/miniconda3/envs/ros/bin/python3 
+```
+
+到100%编译成功即可
+
+## 运行与录制
+### 运行ros
+```
+roscore
+```
+
+### 启动新的一个终端，用于启动传感器
+```
+source devel/setup.bash
+roslaunch start_collect start.launch
+##在弹出的rviz中可以查看同时的图像和点云数据
+##使用rostopic list可以查看发布了的话题
+##使用rostopic echo 话题名称 可以查看话题实时数据
+##运行时可能会缺失某些python的库，按提示安装即可
+```
+```
+##启动云台
+##云台控制使用，w，a，s，d控制上下左右，空格进入巡航，再按一次退出，长按空格进入和雷达联动自动模式
+roslaunch start_collect ptz_ctrl.launch
+```
+
+### 启动一个新终端，使用rosbag记录数据
+```
+rosbag record /pointcloud /compressedimg1  /compressedimg2  /compressedimg3  /compressedimg4 /hik_cam_node_visible/image_raw /hik_cam_node_thermal/image_raw /quantum_spoke /ownship /envdata /nmea_sentense /ais
+##使用rosbag info xxx.bag 可以查看两个传感器采样频率是否对齐
+```
+
+## 回放
+```
+roscore
+source devel/setup.bash
+##必须为绝对路径
+roslaunch start_collect play.launch bag_path:="/home/li012/robosense_ws/data/1208lidar/3.bag" 
+```
+
+## 解码为jpg和pcd
+
+### 使用ros2imgAndpcd目录下的py文件完成image和点云数据的解码
+conda activate ros ## 激活pyhton环境\
+修改bagfile_path = './xxx.bag'和保存路径
+
+
+### 附：抓取pcap
+sudo tcpdump -i 网卡名 -w a.pcap -c 30000 'udp dst port 7788 or 6699' # 网卡名用ifconfig查看
+
+# 2025.01.15 更新 OPENCPN->雷达目标检测->控制云台相机 和 GPS，AIS，罗经报文解析与储存
+
+## GPS 罗经报文
+这部分在使用了ros的开源包nmea_navsat_driver，并将launch文件改为网口数据，发送到/nmea_sentence话题
+
+<url>http://wiki.ros.org/nmea_navsat_driver</url>
 
 ## 雷达目标检测
-在OPENCPN中还需要将OPENCPN产生的数据连到串口上，这部分可以参考这个。
+OPENCPN需要GPS的NMEA格式的报文以得到HDT等航海数据来产生ARPA目标，因此我需要将网口的数据让OPENCPN捕捉到。同时在OPENCPN中还需要将OPENCPN产生的数据连到网口上，配置这部分可以参考这个。（不过这个是串口，网口也类似）
 
 <url>https://github.com/schvarcz/OpenCPN2ROS</url>
 
@@ -12,7 +163,10 @@ OPENCPN使用ARPA产生的目标用以下的NMEA语句表示，可参考这个
 
 <url>https://github.com/nohal/OpenCPN/wiki/ARPA-targets-tracking-implementation</url>
 
-然后需要解析NMEA语句，将其转为我们所需的角度，再传给云台，这部分我也在opencpn2ros中实现。
+然后需要解析NMEA语句，将其转为我们所需的角度，再传给云台，这部分我在opencpn2ros中实现
+
+## AIS
+AIS的NMEA数据我使用pyais库来解析并发送，在opencpn2ros中实现，发送到/ais话题
 
 # 2025.01.13 更新 海康威视双光谱云台摄像机和IMU 消息接口
 
@@ -62,53 +216,12 @@ rosbag record /pointcloud /compressedimg1  /compressedimg2  /compressedimg3  /co
 
 这部分主要是想实现如何将雷达数据和相机数据联合标注转换后，点云映射到图像上的效果，目前参考了<url>https://github.com/jhzhang19/ros_project_pc_to_image</url>的包，但还没有实现出来，等实现了我会提交2.2版本的
 
-# 说明
-本程序用于海康威视监控相机+RoboSense128线激光雷达同步数据采集，本程序已经做好封装，时间同步和去NaN值\
-更多请看<url>https://blog.csdn.net/u011549111/article/details/144158995</url>
-
-# 编译
-## 检查相机配置
-在src/hikvision/launch/hik.launch中更改ip等如下\
-(具体配置联系管理员获取，这里仅参考)\
-\<arg name="ip_addr" default="192.168.xxx.xxx"/>\
-\<arg name="user_name" default="admin"/>\
-\<arg name="password" default="***********"/>
-
-## 检查雷达配置
-在src/rslidar_sdk/config/config.yaml中更改雷达型号
-
-## 在本文件所在路径下make
-catkin_make
-
-使用conda的话先激活环境安装empy，再catkin_make
-pip install empy==3.3.4
-catkin_make -DPYTHON_EXECUTABLE=/home/li012/miniconda3/envs/ros/bin/python3 # 这里改成你的环境路径
-
-# 运行与录制
-## 运行ros
-roscore
-
-## 启动新的一个终端，用于启动传感器
-source devel/setup.bash\
-roslaunch start_collect start.launch\
-##在弹出的rviz中可以查看同时的图像和点云数据\
-##使用rostopic list可以查看发布了的话题
-
-## 启动一个新终端，使用rosbag记录数据
-rosbag record /pointcloud /compressedimg1  /compressedimg2  /compressedimg3  /compressedimg4
-##使用rosbag info xxx.bag 可以查看两个传感器采样频率是否对齐
-
-# 回放
-roscore\
-source devel/setup.bash\
-roslaunch start_collect play.launch bag_path:="/home/li012/robosense_ws/data/1208lidar/3.bag" # 必须为绝对路径
-
-# 解码为jpg和pcd
-
-## 使用ros2imgAndpcd目录下的py文件完成image和点云数据的解码
-conda activate ros ## 激活pyhton环境\
-修改bagfile_path = './xxx.bag'和保存路径
-
-
-## 附：抓取pcap
-sudo tcpdump -i 网卡名 -w a.pcap -c 30000 'udp dst port 7788 or 6699' # 网卡名用ifconfig查看
+# 2024.12
+开坑一个多传感器的采集系统，使用ros实现，用rosbag采集需要的话题。本次实现内容包括：
+1. 海康威视全景相机 四个镜头分别输出数据
+2. RoboSense128线激光雷达输出数据
+3. 图像与点云的时间同步
+4. 点云去NaN值
+5. 重播bag包中的压缩图像
+6. 封装所有节点
+7. bag解析为jpg和pcd
