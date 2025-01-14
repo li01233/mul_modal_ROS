@@ -1,0 +1,16 @@
+Header header
+uint8 message_type
+uint8 repeat_indicator
+uint8 MMSI
+uint8 nav_status
+uint8 turn
+uint8 maneuver
+float32 speed
+float32 accuracy
+float32 longitude
+float32 latitude
+float32 course
+float32 heading
+uint32 second
+bool raim
+uint32 radio

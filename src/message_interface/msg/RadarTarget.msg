@@ -1,1 +1,1 @@
-int32[] pitch
+float32 pitch

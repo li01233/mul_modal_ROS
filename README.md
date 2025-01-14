@@ -1,26 +1,49 @@
-# 2025.01.13 更新 海康威视双光谱云台摄像机和IMU
+# 2025.01.16 更新 OPENCPN->雷达目标检测->控制云台相机 和 GPS报文发送
+
+## GPS报文
+OPENCPN需要GPS的NMEA格式的报文以得到HDT等航海数据来产生ARPA目标，因此我需要将网口的数据转为NMEA格式的，让OPENCPN捕捉到。这部分在opencpn2ros中实现。
+
+## 雷达目标检测
+在OPENCPN中还需要将OPENCPN产生的数据连到串口上，这部分可以参考这个。
+
+<url>https://github.com/schvarcz/OpenCPN2ROS</url>
+
+OPENCPN使用ARPA产生的目标用以下的NMEA语句表示，可参考这个
+
+<url>https://github.com/nohal/OpenCPN/wiki/ARPA-targets-tracking-implementation</url>
+
+然后需要解析NMEA语句，将其转为我们所需的角度，再传给云台，这部分我也在opencpn2ros中实现。
+
+# 2025.01.13 更新 海康威视双光谱云台摄像机和IMU 消息接口
 
 ## 双光谱相机
-相机图像展示部分我依旧写在了hikvison_ros中,运行hik_tem.launch即可(用start_collect start.launch也可以),图片的在话题hik_cam_node_visible和hik_cam_node_thermal下
+相机图像展示部分我依旧写在了hikvison_ros中，运行hik_tem.launch即可(用start_collect start.launch也可以)，图片的在话题hik_cam_node_visible和hik_cam_node_thermal下
 
-云台操作我都封装好了,具体控制逻辑在hik_tem/scripts的ptz_contrl.py中,我把360度自动巡航和键盘控制写了,后续会更新和Quantum2导航雷达目标检测联动的功能
+云台操作我都封装好了，具体控制逻辑在hik_tem/scripts的ptz_contrl.py中，我把360度自动巡航和键盘控制写了，后续会更新和Quantum2导航雷达目标检测联动的功能
 
 启动方式依然使用
 
 roslaunch start_collect start.launch
 
-云台控制使用,w,a,s,d控制上下左右，空格进入巡航，再按一次退出，长按空格进入和雷达联动自动模式
+云台控制使用，w，a，s，d控制上下左右，空格进入巡航，再按一次退出，长按空格进入和雷达联动自动模式
 
 roslaunch start_collect ptz_ctrl.launch 
 
 ## IMU
-IMU使用的并不是普遍的串口那种,所以这里其实我只针对我们船的网口写了一个通讯协议而已,可以将网口传的数据解析并发布到自定义消息格式的话题/ownship和/envdata,存了GPS,IMU,气象仪,罗经等返回的数据.如果想研究组播通讯的可以看一看代码(但意义不大)
+IMU使用的并不是普遍的串口那种，所以这里其实我只针对我们船的网口写了一个通讯协议而已，可以将网口传的数据解析并发布到自定义消息格式的话题/ownship和/envdata，存了GPS，IMU，气象仪，罗经等返回的数据。如果想研究组播通讯的可以看一看代码（但意义不大）
+
+## 消息接口
+我将所有自定义的消息都写到了message_interfaces中，这样也更加规范了
 
 ## 两个未实现的内容
 
-第一个还是联合标定显示效果,我将参数都写好了到了程序里,但显示的结果并不好,很难对齐.初步认为是标定矩阵的问题,估计要重新来一遍.联合显示程序运行起来还是很慢的,毕竟要把每个点云都投射上去,本程序可以用作重播的参考,采集的时候就别用了(我将他写进了start_collect play.launch中)
+第一个还是联合标定效果显示，我将参数都写好了到了程序里，但显示的结果并不好，很难对齐。初步认为是标定矩阵的问题，估计要重新来一遍。
 
-第二是刚才说的,将Quantum2返回的数据进行一个目标检测,输出目标角度,用以控制双光谱云台摄像机去拍摄.这部分我心里也不知道能不能实现,再看吧(目前是准备和OPENCPN联动,让OPENCPN去用APRA算法检测输出NMEA数据,然后我用ROS接受NMEA数据算出角度,再发给双光谱云台.这部分应该会在opencpn2ros这个包里实现)
+联合显示程序运行起来还是很慢的，毕竟要把每个点云都投射上去（程序在ros_project_pc_to_image中）。本程序可以用作rosplay播放采集好数据后的参考，采集的时候就别用了。启动方式如下：
+
+roslaunch start_collect play.launch
+
+第二是上文说的，将Quantum2返回的数据进行一个目标检测，输出目标角度用以控制双光谱云台摄像机去拍摄。这部分我心里也不知道能不能实现，再看吧（目前是准备和OPENCPN联动，让OPENCPN去用ARPA算法检测输出NMEA数据，然后我用ROS接受NMEA数据算出角度，再发给双光谱云台。这部分应该会在opencpn2ros这个包里实现）
 
 # 2024.12.20 更新 Quantum2雷达和一个未实现的内容
 

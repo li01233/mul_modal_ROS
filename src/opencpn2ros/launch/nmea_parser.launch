@@ -1,0 +1,16 @@
+<launch>
+    <arg name="ip" default="192.168.2.115" />
+    <arg name="arpa_port" default="20004" />
+    <arg name="ais_port" default="20002" />
+
+    <node name="arpa_parser" pkg = "opencpn2ros" output="screen" type = "arpa_parser.py">
+        <param name="port" value="$(arg arpa_port)" />
+        <param name="ip" value="$(arg ip)" />
+    </node>
+
+    <node name="ais_parser" pkg = "opencpn2ros" output="screen" type = "ais_parser.py">
+        <param name="port" value="$(arg ais_port)" />
+        <param name="ip" value="$(arg ip)" />
+    </node>
+
+</launch>

@@ -8,7 +8,7 @@ import rospy
 
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from std_msgs.msg import Int8MultiArray
+from message_interface.msg import Spoke
 
 from location_info import LocationInfo
 import control_message
@@ -43,14 +43,14 @@ class Qauntum():
         self.report_socket = self.create_report_socket() # socket for receiving radar data
 
         self.standby_timer = rospy.Timer(rospy.Duration(1),self.standby_timer_callback)
-        self.polar_image_timer  = rospy.Timer(rospy.Duration(2.5), self.imager_callback)
-        self.data_timer = rospy.Timer(rospy.Duration(1), self.radar_data_callback)
-        self.diagnostic_timer = rospy.Timer(rospy.Duration(3),self.publish_radar_heartbeat)
+        self.polar_image_timer  = rospy.Timer(rospy.Duration(5), self.imager_callback)
+        self.data_timer = rospy.Timer(rospy.Duration(0.01), self.radar_data_callback)
+        self.diagnostic_timer = rospy.Timer(rospy.Duration(3.5),self.publish_radar_heartbeat)
 
         self.image_publisher_ = rospy.Publisher("/radar_image", Image, queue_size=10)
         self.polar_image_publisher = rospy.Publisher('/USV/Polar', Image, queue_size=10)
         self.diagnostic_pub = rospy.Publisher('/diagnostic_status', String, queue_size=10)
-        self.data_pub = rospy.Publisher('/quantum_spoke', Int8MultiArray, queue_size=10)
+        self.data_pub = rospy.Publisher('/quantum_spoke', Spoke, queue_size=10)
 
         # subscription
         self.radar_control_subscription = rospy.Subscriber('/radar_control', String, self.radar_control_callback, queue_size=10)
@@ -58,7 +58,6 @@ class Qauntum():
         self.alive_counter = 0
         self.num_spokes = DEFAULT_NUM_SPOKES # DEFAULT_NUM_SPOKES
         self.spokes = np.zeros((DEFAULT_NUM_SPOKES, MAX_SPOKE_LENGTH), np.uint8) # MAX_SPOKE_LENGTH = 1024
-        self.spokes_updated = 0
         self.set_zoom(0)
         self.bridge = CvBridge()
         self.scanning = False
@@ -272,16 +271,11 @@ class Qauntum():
         # and 125th azimuth points towards the **front** of the radar
         self.spokes[(qs.azimuth + DEFAULT_NUM_SPOKES//2) %  DEFAULT_NUM_SPOKES, :len(qs.data)] = qs.data
         
-        #########record############################################3
-        self.data_pub.publish(Int8MultiArray(data=self.spokes.tolist()))
-
-        self.spokes_updated += 1
-        
-        # msg = Spoke()
-        # msg.azimuth = qs.azimuth
-        # msg.data = qs.data
-        # self.spoke_publisher.publish(msg)
-        # rospy.INFO(f'published {msg=}')
+        #########record############################################
+        msg = Spoke()
+        msg.azimuth = qs.azimuth
+        msg.data = qs.data
+        self.data_pub.publish(msg)
 
 
     def process_quantum_report(self, data: bytes):
@@ -306,7 +300,6 @@ class Qauntum():
         self.image_publisher_.publish(self.bridge.cv2_to_imgmsg(ctrl_station_img, encoding="passthrough"))
         
         self.spokes = np.zeros((DEFAULT_NUM_SPOKES, MAX_SPOKE_LENGTH), np.uint8)
-        self.spokes_updated = 0
 
 
     def radar_control_callback(self, msg):
@@ -334,7 +327,7 @@ class Qauntum():
 
 
 def main(args=None):
-    rospy.init_node("quantum")
+    rospy.init_node("quantum_radar")
     quantum = Qauntum()
     rospy.spin()
 

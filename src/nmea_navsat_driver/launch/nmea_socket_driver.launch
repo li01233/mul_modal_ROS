@@ -1,0 +1,34 @@
+<launch>
+ 
+  <!-- A simple launch file for the nmea_serial_driver node. -->
+ 
+  <arg name="ip" default="192.168.2.115" />
+  <arg name="port_gps" default="20003" />
+  <arg name="port_compass" default="20001" />
+
+  <arg name="frame_id_1" default="gps" />
+  <arg name="frame_id_3" default="compass" />
+
+  <arg name="use_GNSS_time" default="False" />
+  <arg name="time_ref_source" default="gps" />
+  <arg name="useRMC" default="False" />
+ 
+  <node name="nmea_socket_driver_node_gps" pkg="nmea_navsat_driver" type="nmea_socket_driver" output="screen">
+    <param name="ip" value="$(arg ip)"/>
+    <param name="port" value="$(arg port_gps)" />
+    <param name="frame_id" value="$(arg frame_id_1)" />
+    <param name="use_GNSS_time" value="$(arg use_GNSS_time)" />
+    <param name="time_ref_source" value="$(arg time_ref_source)" />
+    <param name="useRMC" value="$(arg useRMC)" />
+  </node>
+
+  <node name="nmea_socket_driver_node_compass" pkg="nmea_navsat_driver" type="nmea_socket_driver" output="screen">
+    <param name="ip" value="$(arg ip)"/>
+    <param name="port" value="$(arg port_compass)" />
+    <param name="frame_id" value="$(arg frame_id_3)" />
+    <param name="use_GNSS_time" value="$(arg use_GNSS_time)" />
+    <param name="time_ref_source" value="$(arg time_ref_source)" />
+    <param name="useRMC" value="$(arg useRMC)" />
+  </node>
+ 
+</launch>

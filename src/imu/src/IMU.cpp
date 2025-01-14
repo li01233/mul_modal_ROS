@@ -162,7 +162,6 @@ void Imu::parseOwnShip(rapidjson::Document& doc)
     ownship.headRatio = content["headRatio"].GetFloat();
     ownship.lat = std::stod(content["lat"].GetString());
     ownship.lon = std::stod(content["lon"].GetString());
-    ownship.mmsi = content["mmsi"].GetInt();
     ownship.pitch = content["pitch"].GetFloat();
     ownship.pitchRatio = content["pitchRatio"].GetFloat();
     ownship.roll = content["roll"].GetFloat();

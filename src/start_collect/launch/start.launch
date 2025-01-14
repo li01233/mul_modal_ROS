@@ -4,7 +4,10 @@
     <include file="$(find hikvision_ros)/launch/hik_tem.launch"/>
     <include file="$(find radar)/launch/quantum.launch"/>
     <include file="$(find hik_tem)/launch/hik_ptz.launch"/>
+    <include file="$(find nmea_navsat_driver)/launch/nmea_socket_driver.launch"/>
+    <include file="$(find opencpn2ros)/launch/nmea_parser.launch"/>
     <node pkg="mess_sync" type="mess_sync" name="mess_sync"/>
+
     <!-- rviz -->
     <node pkg="rviz" name="rviz" type="rviz" args="-d $(find start_collect)/rviz/rviz.rviz" />
 </launch>

@@ -37,7 +37,7 @@ def generate_radar_image(spokes, K):
         dsize=(2*MAX_SPOKE_LENGTH, 2*MAX_SPOKE_LENGTH), 
         center=(MAX_SPOKE_LENGTH, MAX_SPOKE_LENGTH), 
         maxRadius=MAX_SPOKE_LENGTH, flags=cv2.WARP_INVERSE_MAP)
-    radar_image = cv2.rotate(radar_image, cv2.ROTATE_90_CLOCKWISE)
+    radar_image = cv2.rotate(radar_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
     
     # get_logger().info(f'{radar_image=} {radar_image.shape}')
     # cv2.imshow('raw image', radar_image); cv2.waitKey(0)
