@@ -63,8 +63,10 @@ IMU 230.168.50.16:20000
 
 更多请看：
 1. 海康威视全景相机+RoboSense128线激光雷达 <url>https://blog.csdn.net/u011549111/article/details/144158995</url>
-2. Quantum2导航雷达+海康威视双光谱云台相机+GPS，AIS，罗经，IMU（未更新完毕） \
+2. Quantum2导航雷达+海康威视双光谱云台相机 \
 <url>https://blog.csdn.net/u011549111/article/details/144703463?spm=1001.2014.3001.5502</url>
+3. GPS，AIS，罗经，IMU（更新完毕） \
+<url>[https://blog.csdn.net/u011549111/article/details/144703463?spm=1001.2014.3001.5502](https://blog.csdn.net/u011549111/article/details/145042125?spm=1001.2014.3001.5501)</url>
 
 # 使用教程
 ## 编译
